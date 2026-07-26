@@ -63,24 +63,31 @@ Same validation logic everywhere. Output adapts automatically: human-friendly in
 | ZIP packaging (upload-ready output) | ✅ | ✅ |
 | CI/CD and MCP integration | ✅ | ✅ |
 | Local preview (publisher-style page) | ✅ | ✅ |
-| Headless browser validation (`--deep`) | — | ✅ |
-| CPU & performance profiling | — | ✅ |
-| Network waterfall analysis | — | ✅ |
-| Visual snapshots | — | ✅ |
+| Deep Audit in a real browser (`--deep`) | — | ✅ |
+| Runtime JavaScript error detection (with file:line) | — | ✅ |
+| CPU profiling & Google Heavy Ad risk (low-end device emulation) | — | ✅ |
+| Network waterfall, HTTPS & load-budget analysis | — | ✅ |
+| Visual checks: screenshots, blank render, slot overflow, border rule | — | ✅ |
+| Animation limit (30s) & auto-redirect/popup detection | — | ✅ |
+| Multi-size pack reports + shareable PDF report (`--report`) | — | ✅ |
+
+Deep Audit ships as a one-time purchase in two sizes — **Pro** (one machine) and
+**Team** (five). Before buying, `ad-preflight trial` emails you a token worth
+**3 Deep Audits over 14 days**, one creative size per run, with a watermarked report.
 
 > **Get started free. Upgrade when you need runtime validation.**
 >
-> `ad-preflight buy` or visit [ad-preflight.com](https://ad-preflight.com)
+> `ad-preflight trial` to try it, `ad-preflight buy` or [ad-preflight.com](https://ad-preflight.com) to buy.
 
-**License management:**
+**Pro setup:**
 
 ```bash
-ad-preflight buy                    # Purchase or join waitlist
-ad-preflight activate <license-key> # Activate on this machine
-ad-preflight license                # Check license status
+ad-preflight buy                        # Purchase (token delivered after checkout)
+ad-preflight plugin-install <token>     # One-time install on this machine
+ad-preflight package ./my-ad --deep     # Audit your creative
 ```
 
-Each Pro license supports up to 2 machines. Core features remain free forever.
+Pro activates one machine; Team covers five. Core features remain free forever. Full guide: [Deep Audit](docs/DEEP.md).
 
 ---
 
@@ -100,7 +107,7 @@ npm install --save-dev @ad-preflight/cli
 npx @ad-preflight/cli package ./ad
 ```
 
-For pipeline setup, see the [CI/CD guide](docs/CI-CD.md). For Cursor/MCP, see [MCP setup](docs/MCP.md).
+For pipeline setup, see the [CI/CD guide](docs/CI-CD.md). For Cursor/MCP, see [MCP setup](docs/MCP.md). For Pro runtime validation, see [Deep Audit](docs/DEEP.md).
 
 ---
 

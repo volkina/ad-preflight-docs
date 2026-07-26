@@ -4,7 +4,7 @@ Validate, fix, and package HTML5 ad creatives from the terminal — catch issues
 
 **Supported platforms:** Google Ads · DV360 · Doubleclick · Sizmek · Adform · any IAB-standard HTML5 ad platform
 
-**See also:** [CI/CD guide](CI-CD.md) for pipelines · [MCP setup](MCP.md) for Cursor and AI agents
+**See also:** [Deep Audit (Pro)](DEEP.md) for runtime checks in a real browser · [CI/CD guide](CI-CD.md) for pipelines · [MCP setup](MCP.md) for Cursor and AI agents
 
 ---
 
@@ -34,8 +34,7 @@ npx @ad-preflight/cli package ./ad
 | `ad-preflight preview <folder>` | Open the ad in a local publisher-style page (test layout, z-index, click-through) |
 | `ad-preflight init-rules` | Add `.cursorrules` to your project so AI agents can suggest ad-preflight |
 | `ad-preflight buy` | Purchase Pro or join the waitlist |
-| `ad-preflight activate <key>` | Activate a Pro license on this machine |
-| `ad-preflight license` | Show current license status |
+| `ad-preflight plugin-install <token>` | Install the Deep Audit plugin with your purchase token — see [Deep Audit](DEEP.md) |
 
 ---
 
@@ -54,8 +53,10 @@ This is the core command. It validates the ad creative, reports issues, and prod
 | `--fix` | Auto-fix issues (click handler, HTTPS, ad.size meta). Backs up originals to `{folder}_original.zip` |
 | `--type <type>` | Ad type: `standard` (default), `amp`, `app` |
 | `--strict-dimensions` | Fail on non-IAB dimensions (default: warn only) |
-| `--deep` | Headless browser validation — CPU profiling, network analysis, visual snapshots (Pro) |
+| `--deep` | Run the ad in a headless browser: JS errors, CPU, network, visual, animation and behavior checks (Pro — see [Deep Audit](DEEP.md)) |
+| `--report [file]` | With `--deep`: write a self-contained PDF report you can share with adops |
 | `--nopreview` | Skip opening the browser after packaging |
+| `--out <dir>` | Where the `.zip` files go. Defaults to the folder containing the creative — for a multi-size campaign, that means one archive per size, next to the campaign |
 | `--json [format]` | Machine-readable JSON output. Use `--json=pretty` for formatted output. See [CI/CD guide](CI-CD.md) |
 | `-h, --help` | Show help |
 
@@ -78,7 +79,8 @@ You keep the backup. The compliance ZIP is what you upload.
 | AMP ad | `ad-preflight package ./amp-ad --type amp --fix` |
 | App campaign | `ad-preflight package ./app-ad --type app` |
 | Strict IAB dimensions | `ad-preflight package ./my-ad --strict-dimensions` |
-| Deep validation (Pro) | `ad-preflight package ./my-ad --deep` |
+| Deep Audit (Pro) | `ad-preflight package ./my-ad --deep` |
+| Deep Audit + PDF report (Pro) | `ad-preflight package ./my-ad --deep --report` |
 | JSON output for scripts | `ad-preflight package ./my-ad --json` |
 | Skip browser preview | `ad-preflight package ./my-ad --fix --nopreview` |
 
@@ -98,18 +100,31 @@ Opens a local browser page that mimics how the ad will appear on a publisher sit
 
 ## Pro features
 
-Deep validation runs your ad in a headless browser and reports what static checks can't catch: CPU performance, network requests, and visual rendering issues.
+The Deep Audit runs your ad in a real headless browser and reports what static checks can't catch: runtime JavaScript errors, CPU on pace for Google's Heavy Ad Intervention, network problems, blank renders, slot overflow, animation-limit violations, and auto-redirects. Multi-size packs get one rolled-up report, and `--report` produces a shareable PDF scorecard.
 
 ```bash
-ad-preflight package ./my-ad --deep    # Requires Pro license
+ad-preflight trial                               # Free trial: 3 Deep Audits, emailed token
+ad-preflight plugin-install <token>              # One-time setup with your purchase token
+ad-preflight package ./my-ad --deep --report     # Audit + shareable PDF report
 ```
 
-**License management:**
+**Full guide: [Deep Audit (Pro)](DEEP.md)** — what it checks, where to buy, installation, and troubleshooting.
+
+Pro activates one machine; Team covers five. Core features remain free forever.
+
+---
+
+## Licence commands
 
 ```bash
-ad-preflight buy                       # Purchase or join waitlist
-ad-preflight activate <license-key>    # Activate on this machine
-ad-preflight license                   # Check status
+ad-preflight trial [token]        # Request a free-trial token, or redeem the one emailed to you
+ad-preflight license              # What this machine holds: plan, machine id, file locations
+ad-preflight license --refresh    # Check in and renew after a long spell offline
+ad-preflight license --show-token # Print the purchase token in full
+ad-preflight recover-license      # Lost the token? We email it to the address that bought it
+ad-preflight plugin-uninstall     # Remove the plugin and hand the machine slot back
 ```
 
-Each Pro license supports up to 2 machines. Core features remain free forever.
+A paid licence does not expire. The plugin re-verifies online from time to time, sending
+only the licence token and a hashed machine id — never your creatives. A machine that
+stays offline past the grace window shows `needs to reconnect` until it checks in again.
