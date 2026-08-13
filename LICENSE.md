@@ -1,7 +1,7 @@
 # Ad-Preflight Platform End User License Agreement
 
 **Copyright © Marinas Paul IT SRL. All rights reserved.**
-Version 1.0 — Effective 4 June 2026
+Version 1.0 - Effective 4 June 2026
 
 IMPORTANT: READ CAREFULLY.
 
